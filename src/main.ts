@@ -13,6 +13,7 @@ interface RGBPixel {
 }
 
 type RGBMatrix = RGBPixel[][];
+const MTLTEXTURES = ["ambientTexture", "diffuseTexture", "specularTexture", "dissolveTexture"];
 
 import cubeOBJ from '/cube.obj?url&raw';
 
@@ -37,28 +38,28 @@ const triangles: Triangle[] = [];
 const model = outputOBJ.models[0];
 
 for (const face of model.faces) {
-    if (face.vertices.length !== 3) { console.warn(`Face "${face.vertices}" does not have exactly 3 vertices, skipping...`) }
-    
-    const vertices: Point3D[] = [];
-      
-    for (let i = 0; i < 3; i++) {
-        const faceVertex = face.vertices[i];
-        const vertex = model.vertices[faceVertex.vertexIndex - 1];
-        const textureCoord = model.textureCoords[faceVertex.textureCoordsIndex - 1];
-        const vertexNormal = model.vertexNormals[faceVertex.vertexNormalIndex - 1];
-        vertices.push(new Point3D(
-            vertex.x,
-            vertex.y,
-            vertex.z,
-            new Point2D(textureCoord?.u || 0, textureCoord?.v || 0),
-            new Point3D(vertexNormal?.x || 0, vertexNormal?.y || 0, vertexNormal?.z || 0),
-            undefined,
-            face.material,
-            faceVertex.vertexIndex - 1
-        ));
-    }
-        
-    triangles.push(new Triangle(vertices[0], vertices[1], vertices[2], face.material, face.smoothingGroup));
+  if (face.vertices.length !== 3) { console.warn(`Face "${face.vertices}" does not have exactly 3 vertices, skipping...`) }
+  
+  const vertices: Point3D[] = [];
+     
+  for (let i = 0; i < 3; i++) {
+    const faceVertex = face.vertices[i];
+    const vertex = model.vertices[faceVertex.vertexIndex - 1];
+    const textureCoord = model.textureCoords[faceVertex.textureCoordsIndex - 1];
+    const vertexNormal = model.vertexNormals[faceVertex.vertexNormalIndex - 1];
+    vertices.push(new Point3D(
+      vertex.x,
+      vertex.y,
+      vertex.z,
+      new Point2D(textureCoord?.u || 0, textureCoord?.v || 0),
+      new Point3D(vertexNormal?.x || 0, vertexNormal?.y || 0, vertexNormal?.z || 0),
+      undefined,
+      face.material,
+      faceVertex.vertexIndex - 1
+    ));
+  }
+  
+  triangles.push(new Triangle(vertices[0], vertices[1], vertices[2], face.material, face.smoothingGroup));
 }
 
 const MTLFiles: string[] = await Promise.all(
@@ -138,10 +139,19 @@ async function pngToRGBMatrix(pngData: Uint8Array | string): Promise<RGBMatrix> 
   }
 }
 
-console.log(JSON.stringify(outputMTL));
-//console.log(JSON.stringify(outputOBJ));
+for (let i = 0; i < mtlData.length; i++) {
+  const mtl = mtlData[i];
+  // import data
+  // run data through pngToRGBMatrix
+  // assign RGBMatrix to mtlData[i][MTLTEXTURES[j]]
+}
+
+console.log(JSON.stringify(mtlData));
+//console.log(JSON.stringify(objData));
 //console.log(JSON.stringify(triangles));
 
+
+// outputMTL
 [
   [
     {
@@ -160,4 +170,27 @@ console.log(JSON.stringify(outputMTL));
       // "specularShininess": 0.0
     }
   ]
-]
+];
+
+// mtlData
+[
+  {
+    "name":"Cube_Material",
+    "illumination":2,
+    "dissolve":1,
+    "opticalDensity":1.45,
+    "specularShininess":0,
+    "ambientColor":{"r":0,"g":0,"b":0},
+    "diffuseColor":{"r":0,"g":0,"b":0},
+    "specularColor":{"r":0.5,"g":0.5,"b":0.5},
+    "emissiveColor":{"r":0,"g":0,"b":0},
+    "ambientTextureURL":"",
+    "diffuseTextureURL":"/public/broken_brick_wall_diff_4k.png",
+    "specularTextureURL":"",
+    "dissolveTextureURL":"",
+    "ambientTexture":[[]],
+    "diffuseTexture":[[]],
+    "specularTexture":[[]],
+    "dissolveTexture":[[]]
+  }
+];
