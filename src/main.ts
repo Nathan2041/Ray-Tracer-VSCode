@@ -140,7 +140,7 @@ async function pngToRGBMatrix(pngData: Uint8Array | string): Promise<RGBMatrix> 
 }
 
 for (let i = 0; i < mtlData.length; i++) {
-  const mtl = mtlData[i];
+  // const mtl = mtlData[i];
   // import data
   // run data through pngToRGBMatrix
   // assign RGBMatrix to mtlData[i][MTLTEXTURES[j]]
@@ -150,6 +150,11 @@ console.log(JSON.stringify(mtlData));
 //console.log(JSON.stringify(objData));
 //console.log(JSON.stringify(triangles));
 
+// shutting up the compiler
+pngToRGBMatrix;
+objData;
+mtlData;
+MTLTEXTURES;
 
 // outputMTL
 [
